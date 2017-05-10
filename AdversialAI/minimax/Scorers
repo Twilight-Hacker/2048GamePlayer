@@ -1,0 +1,897 @@
+
+        
+    @staticmethod
+    def getGridScore(grid): #389 328
+        moves = grid.getAvailableMoves()
+        if(not moves):
+            return 0
+        
+        score = 0
+        #count score of this grid and return it
+        
+        maxT =  grid.getMaxTile()
+        score = score + maxT*maxT*len(moves)
+        
+        n = grid.size
+        
+        for i in range(n):
+            for j in range(n):
+                curr = grid.getCellValue((i,j))
+                if(curr==0):
+                    if(i>0) & (i<n-1):
+                        prevT = grid.getCellValue((i-1,j))
+                        nextT = grid.getCellValue((i+1,j))
+                        if(nextT==0) | (prevT==0):
+                            continue
+                        if(prevT==nextT):
+                            score = score + prevT*prevT
+                        x = prevT/nextT
+                        if(x<=4) | (x>=0.25):
+                            score = score + maxT*5
+                        else:
+                            score = score - maxT*5
+                    else:
+                        score = score + maxT*(n-i)*(n-j)
+                    if(j>0) & (j<n-1):
+                        prevT = grid.getCellValue((i,j-1))
+                        nextT = grid.getCellValue((i,j+1))
+                        if(nextT==0) | (prevT==0):
+                            continue
+                        if(prevT==nextT):
+                            score = score + prevT*prevT
+                        x = prevT/nextT
+                        if(x<=4) | (x>=0.25):
+                            score = score + maxT*5
+                        else:
+                            score = score - maxT*5
+                    else:
+                        score = score + maxT
+                else:
+                    score = score + curr*curr*2
+                    if(i>0):
+                        prevT = grid.getCellValue((i-1,j))
+                        x = prevT/curr
+                        if(x>1):
+                            score = score - prevT*prevT
+                        elif(x==1):
+                            score = score + curr*curr
+                        else:
+                            score = score + prevT*prevT
+                    if(j>0):
+                        prevT = grid.getCellValue((i,j-1))
+                        x = prevT/curr
+                        if(x>1):
+                            score = score - prevT*prevT
+                        elif(x==1):
+                            score = score + curr*curr
+                        else:
+                            score = score + prevT*prevT
+        return score
+    
+	@staticmethod
+    def getGridScore(grid): #294
+        maxT = grid.getMaxTile()
+        return maxT*maxT   
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    @staticmethod
+    def getGridScore(grid): #245
+        
+        moves = grid.getAvailableMoves()
+        if(not moves):
+            return 0
+        
+        score = 0
+        #count score of this grid and return it
+        
+        maxT =  grid.getMaxTile()
+        score = score + maxT*maxT
+        #count = grid.map.count(maxT)
+        #score = score + (maxT*2*count)
+        
+        n = grid.size
+        
+        if(maxT>250):
+            score = score + PlayerAI.getGridScore7(grid)
+            
+            if(maxT/2) in grid.map:
+                score = score*2
+            
+            if(grid.getCellValue((n-1,n-1))==0):
+                score = score - 20000    
+            elif grid.getCellValue((n-1,n-1)) < (maxT/4) :
+                score = score - 10000
+            
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr==0):
+                        if(i==n-1) | (j==n-1):
+                            score = score - 10000
+                        else:
+                            score = score + 3000
+                    else:
+                        score = score + (i+1)*(j+2)*curr*curr
+                        if(i>0):
+                            nextT = grid.getCellValue((i-1,j))
+                            if(curr==nextT):
+                                score = score + curr*100
+                            elif(curr>nextT):
+                                score = score + curr*30
+                            else:
+                                score = score - (nextT/curr)*100
+                        if(j>0):
+                            nextT = grid.getCellValue((i,j-1))
+                            if(curr==nextT):
+                                score = score + curr*100
+                            elif(curr>nextT):
+                                score = score + curr*30
+                            else:
+                                score = score - (nextT/curr)*100
+                        if(i<n-1):
+                            nextT = grid.getCellValue((i+1,j))
+                            if(curr==nextT):
+                                score = score + curr*100
+                            elif(curr<nextT):
+                                score = score + curr*30
+                            else:
+                                score = score - (nextT/curr)*100
+                        if(j<n-1):
+                            nextT = grid.getCellValue((i,j+1))
+                            if(curr==nextT):
+                                score = score + curr*100
+                            elif(curr<nextT):
+                                score = score + curr*30
+                            else:
+                                score = score - (nextT/curr)*100
+            
+        elif(maxT>60):
+            if(maxT/2) in grid.map:
+                score = score*2
+            
+            if(grid.getCellValue((n-1,n-1))==0):
+                score = score - 3000    
+            elif grid.getCellValue((n-1,n-1)) < (maxT/4) :
+                score = score - 1000
+            
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr==0):
+                        if(i>=n/2) & (j>=n/2):
+                            score = score - 300
+                        else:
+                            score = score + 200
+                    else:
+                        score = score + (i+1)*(j+2)*curr*curr
+                        if(i>0):
+                            nextT = grid.getCellValue((i-1,j))
+                            if(curr==nextT):
+                                score = score + curr*20
+                            elif(curr>nextT):
+                                score = score + curr*5
+                            else:
+                                score = score - (nextT/curr)*30
+                        if(j>0):
+                            nextT = grid.getCellValue((i,j-1))
+                            if(curr==nextT):
+                                score = score + curr*20
+                            elif(curr>nextT):
+                                score = score + curr*5
+                            else:
+                                score = score - (nextT/curr)*30
+        else:
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr==0):
+                        if(i>=n/2) & (j>=n/2):
+                            score = score - 300
+                        else:
+                            score = score + 200
+                    else:
+                        score = score + (i+1)*(j+2)*curr*curr
+                        if(curr>grid.getCellValue((i-1,j))):
+                            score = score + 100
+                        if(curr>grid.getCellValue((i,j-1))):
+                            score = score + 100
+        
+        
+        score = score*len(moves)
+        
+        return score
+
+    
+    
+    
+    @staticmethod
+    def getGridScore(grid): #360 #378
+        moves = grid.getAvailableMoves()
+        if(not moves):
+            return 0
+        
+        score = 0
+        #count score of this grid and return it
+        
+        maxT =  grid.getMaxTile()
+        score = score + maxT*maxT
+        
+        n = grid.size
+        
+        for i in range(n):
+            for j in range(n):
+                curr = grid.getCellValue((i,j))
+                if(curr==0):
+                    score = score + maxT
+                else:
+                    score = score + curr*curr
+                    
+        return score*len(moves)
+
+    
+    
+        
+    @staticmethod
+    def getGridScore(grid): #332
+        
+        moves = grid.getAvailableMoves()
+        if(not moves):
+            return 0
+        
+        score = 0
+        #count score of this grid and return it
+        
+        maxT =  grid.getMaxTile()
+        score = score + maxT*maxT
+        
+        n = grid.size
+        
+        if(maxT>500):
+            
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr==maxT/2):
+                        score = score + maxT*2
+                    if(curr==0):
+                            score = score + 3000
+                    else:
+                        score = score + curr*curr*10000
+                        if(i>0):
+                            nextT = grid.getCellValue((i-1,j))
+                            if(curr==nextT):
+                                score = score + curr*100
+                            elif (nextT==0):
+                                if(curr<50):
+                                    score = score + curr*10
+                                else:
+                                    score = score - curr*10
+                            else:
+                                score = score + (curr/nextT)*5000
+                        if(j>0):
+                            nextT = grid.getCellValue((i,j-1))
+                            if(curr==nextT):
+                                score = score + curr*100
+                            elif (nextT==0):
+                                if(curr<50):
+                                    score = score + curr*10
+                                else:
+                                    score = score - curr*10
+                            else:
+                                score = score + (curr/nextT)*5000
+                        if(i<n-1):
+                            nextT = grid.getCellValue((i+1,j))
+                            if(curr==nextT):
+                                score = score + curr*100
+                            elif (nextT==0):
+                                if(curr<50):
+                                    score = score + curr*10
+                                else:
+                                    score = score - curr*10
+                            else:
+                                score = score + (nextT/curr)*5000
+                        if(j<n-1):
+                            nextT = grid.getCellValue((i,j+1))
+                            if(curr==nextT):
+                                score = score + curr*100
+                            elif (nextT==0):
+                                if(curr<50):
+                                    score = score + curr*10
+                                else:
+                                    score = score - curr*10
+                            else:
+                                score = score + (nextT/curr)*5000
+        elif(maxT>120):
+            if(maxT/2) in grid.map:
+                score = score*2
+            
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr==0):
+                        score = score + 200
+                    else:
+                        score = score + curr*curr*300
+                        if(i>0):
+                            nextT = grid.getCellValue((i-1,j))
+                            if(curr==nextT):
+                                score = score + curr*500
+                            elif (nextT==0):
+                                if(curr<50):
+                                    score = score + curr*5
+                                else:
+                                    score = score - curr*5
+                            else:
+                                score = score + (nextT/curr)*3000
+                        if(j>0):
+                            nextT = grid.getCellValue((i,j-1))
+                            if(curr==nextT):
+                                score = score + curr*50
+                            elif (nextT==0):
+                                if(curr<50):
+                                    score = score + curr*5
+                                else:
+                                    score = score - curr*5
+                            else:
+                                score = score + (nextT/curr)*3000
+        elif(maxT>30):
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr==0):
+                        score = score + 100
+                    else:
+                        score = score + curr*curr
+            
+        else:
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr==0):
+                        score = score+1
+                    else:
+                        score = score + curr*curr
+        
+        score = score*len(moves)
+        
+        return score
+
+    
+    @staticmethod
+    def getGridScore(grid): #358 #345
+        
+        moves = grid.getAvailableMoves()
+        if(not moves):
+            return 0
+        
+        score = 0
+        #count score of this grid and return it
+        
+        maxT =  grid.getMaxTile()
+        score = score + maxT*maxT*100
+        
+        n = grid.size
+        
+        
+        if(maxT>500):            
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    
+                    if (i<n/2) & (curr<maxT/8):
+                        score = score+ 1000
+                    elif (i>n/2) & (curr>maxT/8):
+                        score = score+ 1000
+                    
+                    if(curr==0):
+                        score = score + 2000
+                        if(i>0):
+                            nextT = grid.getCellValue((i-1,j))
+                            if(nextT!=0):
+                                score = score - (nextT/2 -1)*2000
+                        if(j>0):
+                            nextT = grid.getCellValue((i,j-1))
+                            if(nextT!=0):
+                                score = score - (nextT/2 -1)*2000
+                    else:
+                        score = score + curr*curr*1000
+                        if(i>0):
+                            nextT = grid.getCellValue((i-1,j))
+                            if (nextT==0):
+                                if(curr < (maxT/8)):
+                                    score = score + 1000
+                                else:
+                                    score = score -1000
+                            else:
+                                score = score - ( max(curr, nextT)/min(curr,nextT) -1 )*2000
+                        if(j>0):
+                            nextT = grid.getCellValue((i,j-1))
+                            if (nextT==0):
+                                if(curr < (maxT/8)):
+                                    score = score + 1000
+                                else:
+                                    score = score -1000
+                            else:
+                                score = score - ( max(curr, nextT)/min(curr,nextT) -1 )*2000
+                        if(i>1):
+                            nextT = grid.getCellValue((i-2,j))
+                            if (nextT==0):
+                                if(curr < (maxT/8)):
+                                    score = score + 1000
+                                else:
+                                    score = score -1000
+                            else:
+                                score = score - ( max(curr, nextT)/min(curr,nextT) -1 )*2000
+                        if(j>1):
+                            nextT = grid.getCellValue((i,j-2))
+                            if (nextT==0):
+                                if(curr < (maxT/8)):
+                                    score = score + 1000
+                                else:
+                                    score = score -1000
+                            else:
+                                score = score - ( max(curr, nextT)/min(curr,nextT) -1 )*2000
+                        if(j<n-1):
+                            nextT = grid.getCellValue((i,j+1))
+                            if (nextT==0):
+                                if(curr < (maxT/8)):
+                                    score = score + 1000
+                                else:
+                                    score = score -1000
+                            else:
+                                score = score - ( max(curr, nextT)/min(curr,nextT) -1 )*2000
+        elif(maxT>120):
+        #if(maxT>120):
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))                    
+                    
+                    if (i<=1) & (curr<maxT/8):
+                        score = score+ 500
+                    elif (i>n/2) & (curr>maxT/8):
+                        score = score+ 500
+
+                    if(curr==maxT/2):
+                        score = score + maxT
+                    if(curr==0):
+                        score = score + 200
+                        if(i>0):
+                            nextT = grid.getCellValue((i-1,j))
+                            if(nextT!=0):
+                                score = score - (nextT/2 -1)*100
+                        if(j>0):
+                            nextT = grid.getCellValue((i,j-1))
+                            if(nextT!=0):
+                                score = score - (nextT/2 -1)*100
+                    else:
+                        score = score + curr*curr*100
+                        if(i>0):
+                            nextT = grid.getCellValue((i-1,j))
+                            if (nextT==0):
+                                if(curr < (maxT/4)):
+                                    score = score + 100
+                                else:
+                                    score = score -100
+                            else:
+                                score = score - ( max(curr, nextT)/min(curr,nextT) -1 )*100
+                        if(j>0):
+                            nextT = grid.getCellValue((i,j-1))
+                            if (nextT==0):
+                                if(curr < (maxT/4)):
+                                    score = score + 100
+                                else:
+                                    score = score -100
+                            else:
+                                score = score - ( max(curr, nextT)/min(curr,nextT) -1 )*100
+        elif(maxT>30):
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr==0):
+                        score = score + 100
+                    else:
+                        score = score + curr*curr*10
+            
+        else:
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr==0):
+                        score = score+10
+                    else:
+                        score = score + curr*curr
+            
+                    
+        score = score*len(moves)
+        
+        return score
+
+    
+    @staticmethod
+    def getGridScore(grid): #272 #327
+        
+        moves = grid.getAvailableMoves()
+        if(not moves):
+            return 0
+        
+        score = 0
+        #count score of this grid and return it
+        
+        maxT =  grid.getMaxTile()
+        score = score + maxT*maxT*100
+        
+        n = grid.size
+        
+        if(maxT>500):            
+            score = score + PlayerAI.gridDistance(grid)*500
+            score = score + grid.map.count(0)*2000
+        elif(maxT>120):
+            score = score + PlayerAI.gridDistance(grid)*100
+            score = score + grid.map.count(0)*500
+        elif(maxT>30):
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr==0):
+                        score = score + 100
+                    else:
+                        score = score + curr*curr*10
+            
+        else:
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr==0):
+                        score = score+10
+                    else:
+                        score = score + curr*curr
+            
+                    
+        score = score*len(moves)
+        
+        return score
+
+
+
+
+    @staticmethod
+    def getGridScore(grid): #77 #230
+        score = 0
+        
+        n = grid.size
+        
+        maxT = grid.getMaxTile()
+        
+        if(maxT>500):
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr>2):
+                        if(curr>120):
+                            mult = 1
+                        elif(curr>30):
+                            mult = 10
+                        else:
+                            mult = 100
+                        score = score + curr*curr*mult
+                        if(i>0):
+                            nextT = grid.getCellValue((i-1,j))
+                            if(curr>nextT*4):
+                                score = score - (curr-nextT)*1000
+                                if(i>1):
+                                    nextT2 = grid.getCellValue((i-2,j))
+                                    if(nextT<nextT2):
+                                        score = score - 10000
+                        if(j>0):
+                            nextT = grid.getCellValue((i,j-1))
+                            if(curr>nextT*4):
+                                score = score - (curr-nextT)*1000
+                                if(i>1):
+                                    nextT2 = grid.getCellValue((i,j-2))
+                                    if(nextT<nextT2):
+                                        score = score - 10000
+                    else: #curr = 0 or 2
+                        score = score + 500
+            
+        elif(maxT>120):
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr>2):
+                        if(curr>30):
+                            mult = 5
+                        else:
+                            mult = 50
+                        score = score + (i+n+1)*(j+1)*curr*curr*mult
+                        if(i>0):
+                            nextT = grid.getCellValue((i-1,j))
+                            if(curr>nextT*4):
+                                score = score - (curr-nextT)*500
+                            if(i>1):
+                                nextT2 = grid.getCellValue((i-2,j))
+                                if(nextT<nextT2):
+                                    score = score - 5000
+                        if(j>0):
+                            nextT = grid.getCellValue((i,j-1))
+                            if(curr>nextT*4):
+                                score = score - (curr-nextT)*500
+                            if(i>1):
+                                nextT2 = grid.getCellValue((i,j-2))
+                                if(nextT<nextT2):
+                                    score = score - 5000
+                    else: #curr = 0 or 2
+                        score = score + 100
+            
+        elif(maxT>30):
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr>2):
+                        score = score + curr*curr
+                    else: #curr = 0 or 2
+                        score = score + 10
+            
+        else:
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr>2):
+                        score = score + curr*curr
+                    else: #curr = 0 or 2
+                        score = score + 5
+        
+        return score
+
+
+    
+    @staticmethod
+    def getGridScore(grid): #121 #168
+        score = 0
+        
+        maxT = grid.getMaxTile()
+        if(maxT<35):
+            return maxT*maxT
+
+        n = grid.size
+        rd=0
+        for i in range(n):
+            for j in range(n):
+                if(grid.getCellValue((i,j))==maxT):
+                    rd = rd+1
+        
+        if(rd>1):
+            score = score + maxT*maxT*1000
+            positions = []
+            for i in range(n):
+                for j in range(n):
+                    curr = grid.getCellValue((i,j))
+                    if(curr<=0):
+                        continue
+                    #score = score + curr*curr
+                    if(curr==maxT):
+                        positions.append((i,j))
+                        if(len(positions)>=2):
+                            break
+                if(len(positions)>=2):
+                    break
+            a=positions[0]
+            b=positions[1]
+            
+            x=abs(a[0]-b[0])
+            y=abs(a[1]-b[1])
+            
+            score = score - (x + y)*1000
+        elif(rd==1):
+            grid2 = grid.clone()
+            for i in range(n):
+                for j in range(n):
+                    if(grid2.getCellValue((i,j))==maxT):
+                        grid2.setCellValue((i,j), -1)
+            score = score + PlayerAI.getGridScore7(grid2)
+
+        else:
+            print "Map Error: " + str(maxT)
+            print rd
+            raise Exception("Map Error")
+        
+        return score
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    @staticmethod
+    def getGridScore(grid): #174 #163
+        moves = grid.getAvailableMoves()
+        if(not moves):
+            return 0
+        
+        score = 0
+        #count score of this grid and return it
+        
+        maxT =  grid.getMaxTile()
+        score = score + maxT*maxT*len(moves)*10
+        
+        n = grid.size
+        
+        for i in range(n):
+            for j in range(n):
+                curr = grid.getCellValue((i,j))
+                if(curr==0):
+                    score = score + maxT*(n-i)*(n-j)
+                    if(i>0) & (i<n-1):
+                        prevT = grid.getCellValue((i-1,j))
+                        nextT = grid.getCellValue((i+1,j))
+                        if(nextT==0) | (prevT==0):
+                            continue
+                        x = prevT/nextT
+                        if(x==1):
+                            score = score + prevT*prevT
+                        elif(x<=4) | (x>=0.25):
+                            score = score + maxT*5
+                        else:
+                            score = score - maxT*5
+                    if(j>0) & (j<n-1):
+                        prevT = grid.getCellValue((i,j-1))
+                        nextT = grid.getCellValue((i,j+1))
+                        if(nextT==0) | (prevT==0):
+                            continue
+                        x = prevT/nextT
+                        if(x==1):
+                            score = score + prevT*prevT
+                        elif(x<=4) | (x>=0.25):
+                            score = score + maxT*5
+                        else:
+                            score = score - maxT*5
+                else:
+                    score = score + curr*curr*10
+                    if(i>0):
+                        prevT = grid.getCellValue((i-1,j))
+                        x = prevT/curr
+                        if(x>1):
+                            score = score - prevT*prevT*x
+                        elif(x==1):
+                            score = score + curr*curr
+                        else:
+                            score = score + prevT*prevT
+                    if(j>0):
+                        prevT = grid.getCellValue((i,j-1))
+                        x = prevT/curr
+                        if(x>1):
+                            score = score - prevT*prevT*x
+                        elif(x==1):
+                            score = score + curr*curr
+                        else:
+                            score = score + prevT*prevT
+                    if(i>0)&(j>0):
+                        diag = grid.getCellValue((i-1,j-1))
+                        if(curr==diag):
+                            score = score - curr*curr*5
+                        elif(curr>diag):
+                            score = score + diag*diag
+                        else:
+                            score = score - diag*diag
+        return score
+    
+
+    
+    
+
+        
+    @staticmethod
+    def getGridScore(grid): #176 #163
+        moves = grid.getAvailableMoves()
+        if(not moves):
+            return 0
+        
+        score = 0
+        #count score of this grid and return it
+        
+        maxT =  grid.getMaxTile()
+        score = score + maxT*maxT*len(moves)*10
+        
+        n = grid.size
+        
+        for i in range(n):
+            for j in range(n):
+                curr = grid.getCellValue((i,j))
+                if(curr==0):
+                    score = score + maxT*(n-i)*(n-j)
+                    if(i>0) & (i<n-1):
+                        prevT = grid.getCellValue((i-1,j))
+                        nextT = grid.getCellValue((i+1,j))
+                        if(nextT==0) | (prevT==0):
+                            continue
+                        x = prevT/nextT
+                        if(x==1):
+                            score = score + prevT*prevT
+                        elif(x<=4) | (x>=0.25):
+                            score = score + maxT*5
+                        else:
+                            score = score - maxT*5
+                    if(j>0) & (j<n-1):
+                        prevT = grid.getCellValue((i,j-1))
+                        nextT = grid.getCellValue((i,j+1))
+                        if(nextT==0) | (prevT==0):
+                            continue
+                        x = prevT/nextT
+                        if(x==1):
+                            score = score + prevT*prevT
+                        elif(x<=4) | (x>=0.25):
+                            score = score + maxT*5
+                        else:
+                            score = score - maxT*5
+                else:
+                    score = score + curr*curr*10
+                    if(i>0):
+                        prevT = grid.getCellValue((i-1,j))
+                        x = prevT/curr
+                        if(x>1):
+                            score = score - prevT*prevT*x
+                        elif(x==1):
+                            score = score + curr*curr
+                        else:
+                            score = score + prevT*prevT
+                    if(j>0):
+                        prevT = grid.getCellValue((i,j-1))
+                        x = prevT/curr
+                        if(x>1):
+                            score = score - prevT*prevT*x
+                        elif(x==1):
+                            score = score + curr*curr
+                        else:
+                            score = score + prevT*prevT
+                    if(i>0)&(j>0):
+                        diag = grid.getCellValue((i-1,j-1))
+                        if(curr==diag):
+                            score = score - curr*curr*5
+                        elif(curr>diag):
+                            score = score + diag*diag
+                        else:
+                            score = score - diag*diag
+        return score
+    
+
+    @staticmethod
+    def getGridScore(grid): #266 #332 #294
+        score = 0
+        maxT = grid.getMaxTile()
+        score = score + maxT*maxT #*maxT   
+        
+        n = grid.size
+        for i in range(1,n):
+            for j in range(1,n):
+                curr = grid.getCellValue((i,j))
+                if(curr==0):
+                    score = score + (2*n-i)*(n-j)*maxT
+                else:
+                    score = score + curr*curr*(n*i+j+1)
+        
+        return score
+
+
